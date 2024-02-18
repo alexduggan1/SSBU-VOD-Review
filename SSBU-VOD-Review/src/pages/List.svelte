@@ -31,7 +31,8 @@
         let new_match: Match = {
             match_id: "",
             notes: match_notes,
-            last_accessed: access_time
+            last_accessed: access_time,
+            players: ["",""]
         };
 
         new_match.match_id = add_match_id;
@@ -50,13 +51,27 @@
         console.log("viewing match " + state.matches[state.currentMatchIdx].match_id);
         pageIndex.set(2);
     }
+
+    let view_mode: string = "players";
 </script>
 
 <h1>List</h1>
+
+<select bind:value={view_mode}>
+    <option value="match_id">match id</option>
+    <option value="players">players</option>
+</select>
+
 <div class="column">
     {#each matches as match, idx}
-        <button on:click={() => {ViewMatch(idx)}}
-            class="match">{idx}: {match.match_id}</button>
+        {#if view_mode === "players" && 
+        (match.players[0] !== "") && (match.players[1] !== "")}
+            <button on:click={() => {ViewMatch(idx)}}
+                class="match">{idx}: {match.players[0]} vs {match.players[1]}</button>
+        {:else}
+            <button on:click={() => {ViewMatch(idx)}}
+                class="match">{idx}: {match.match_id}</button>
+        {/if}
     {/each}
 </div>
 
