@@ -1,9 +1,10 @@
 <script lang="ts">
 	import Editor from "./pages/Editor.svelte";
 	import List from "./pages/List.svelte";
+  import Start from "./pages/Start.svelte";
 	import { pageIndex } from "./stores";
 
-	let pages = [List, Editor];
+	let pages = [Start, List, Editor];
 	let pageIdx = 0;
 	let state = {};
 	$: (() => {
