@@ -298,7 +298,7 @@
     </div>
 </div>
 
-<button on:click={() => {DeleteMatch()}}>Delete Match</button>
+<button on:click={() => {getModal("delete-match-confirm").open()}}>Delete Match</button>
 <button on:click={() => {GoBack()}}>Go Back</button>
 
 <Modal id="match-info-editor">
@@ -306,6 +306,14 @@
     <input type = "text" id="p1-name" name = "p1-name" bind:value={match.players[0]}>
     <label for="p2-name">Player 2</label>
     <input type = "text" id="p2-name" name = "p2-name" bind:value={match.players[1]}>
+</Modal>
+
+<Modal id="delete-match-confirm">
+    Are you sure?
+    <button on:click={() => {
+        DeleteMatch();
+        getModal("delete-match-confirm").close();
+        }}>Delete!</button>
 </Modal>
 
 <Modal id="add-dock-note">
