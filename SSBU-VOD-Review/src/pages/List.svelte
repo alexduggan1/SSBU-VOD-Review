@@ -27,6 +27,21 @@
 
     let add_match_id: string;
     function AddMatch(){
+        let adding_match_id: string = "";
+        // figure out url or id
+        if(add_match_id.includes(".com")){
+            // it's a url
+            console.log(add_match_id.indexOf("?v="));
+            console.log(add_match_id.substring(add_match_id.indexOf("?v=") + 3));
+            console.log(add_match_id.substring(add_match_id.indexOf("?v=") + 3).substring(0, add_match_id.substring(add_match_id.indexOf("?v=") + 3).indexOf("&")));
+            adding_match_id = add_match_id.substring(add_match_id.indexOf("?v=") + 3).substring(0, add_match_id.substring(add_match_id.indexOf("?v=") + 3).indexOf("&"));
+        }
+        else{
+            // it's an id
+            adding_match_id = add_match_id;
+        }
+
+        // add
         let match_notes: Note[] = [];
         let access_time: Date = new Date();
 
@@ -37,7 +52,7 @@
             players: ["",""]
         };
 
-        new_match.match_id = add_match_id;
+        new_match.match_id = adding_match_id;
 
         console.log("new match " + new_match);
         matches.push(new_match);
@@ -46,6 +61,27 @@
         state.matches = matches;
         state.currentMatchIdx = matches.length - 1;
         pageIndex.set(2);
+    }
+    function ImportMatch(){
+        console.log(JSON.parse(add_match_id));
+        if(JSON.parse(add_match_id) != null){
+            let imported_data = JSON.parse(add_match_id);
+            
+            if(imported_data.match_id instanceof String &&
+            imported_data.last_accessed instanceof Date){
+                let new_match: Match = {
+                    match_id: imported_data.match_id,
+                    notes: imported_data.notes,
+                    last_accessed: imported_data.last_accessed,
+                    players: imported_data.players
+                };
+
+                matches.push(new_match);
+                state.matches = matches;
+                state.currentMatchIdx = matches.length - 1;
+                pageIndex.set(2);
+            }            
+        }
     }
 
     function ViewMatch(idx: number){
@@ -59,6 +95,8 @@
     let filter_type: string = "none"; // reviewed or player or none
     let filter_player: string = "";
     let player_list: string[] = [];
+
+    let add_type: string = "add"; // add or import
 
     matches.forEach(element => {
         if(! player_list.includes(element.players[0])){
@@ -151,16 +189,9 @@
     {/each}
 </div>
 
-<label for="add-match-id">New Match Id:</label>
-<input
-	type="text"
-	name="add-match-id"
-	bind:value={add_match_id}
-	id="add-match-id"
-/>
 
 <button on:click={() => {
-    AddMatch();
+    getModal("match-adder").open();
 }}>Add Match</button>
 
 
@@ -184,6 +215,49 @@
             </select>
         {/if}
     </div>
+</Modal>
+
+<Modal id="match-adder">
+    <div class="match-add-modal">
+        <h1>Add Match</h1>
+        <label for="add-type-chooser">Add or Import</label>
+        <select id="add-type-chooser" name="add-type-chooser" 
+        bind:value={add_type}>
+            <option value="add">add</option>
+            <option value="import">import</option>
+        </select>
+
+        <div class="match-add-chunk">
+            {#if add_type == "add"}
+                <label for="add-match-id">New Match Id / Youtube URL:</label>
+                <input
+                    type="text"
+                    name="add-match-id"
+                    bind:value={add_match_id}
+                    id="add-match-id"
+                />
+                <button on:click={() => {
+                    AddMatch();
+                    getModal("match-adder").close();
+                }}>Add Match</button>
+            {:else}
+                <label for="add-match-id">Match Data:</label>
+                <input
+                    type="text"
+                    name="add-match-id"
+                    bind:value={add_match_id}
+                    id="add-match-id"
+                />
+                <button on:click={() => {
+                    ImportMatch();
+                    getModal("match-adder").close();
+                }}>Import Match</button>
+            {/if}
+        </div>
+        
+    </div>
+    
+
 </Modal>
 
 
@@ -216,5 +290,15 @@
         display: flex;
         flex-direction: column;
         row-gap: 5%;
+    }
+    .match-add-modal {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+    }
+    .match-add-chunk {
+        display: flex;
+        flex-direction: column;
+        margin-top: 5%;
     }
 </style>

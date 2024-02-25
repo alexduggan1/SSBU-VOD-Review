@@ -13,7 +13,9 @@
 		}
 	})();
 	pageIndex.subscribe((val) => {
-		window.scrollTo(0, 0);
+		if(val == 2){
+			window.scrollTo(0, 0);
+		}
 		pageIdx = val;
 	});
 </script>

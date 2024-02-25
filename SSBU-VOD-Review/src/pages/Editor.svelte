@@ -300,6 +300,7 @@
 
 <button on:click={() => {getModal("delete-match-confirm").open()}}>Delete Match</button>
 <button on:click={() => {GoBack()}}>Go Back</button>
+<button on:click={() => {getModal("export-match").open()}}>Export Match Data</button>
 
 <Modal id="match-info-editor">
     <label for="p1-name">Player 1</label>
@@ -368,6 +369,11 @@
         RemoveNote(currentViewingNote);
         getModal("view-inst-note").close();
     }}>Delete</button>
+</Modal>
+
+<Modal id="export-match">
+    <h1>Copy Export Data:</h1>
+    <p>{JSON.stringify(match)}</p>
 </Modal>
 
 <style>
